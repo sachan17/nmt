@@ -136,37 +136,20 @@ def translate(input_tensor, model, max_length=MAX_LENGTH):
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
-# data = {"in":input_lang, "out": output_lang, "in_e":input_embd,
-# "out_e": output_embd, 'p': pairs, 'tp': training_pairs}
-
-import pickle
-f = open('preprocess_en_de.pickle', 'rb')
-data = pickle.load(f)
-f.close()
-input_lang =  data['in']
-output_lang = data['out']
-pairs = data['p']
-input_embd = data['in_e']
-output_embd = data['out_e']
-training_pairs = data['tp']
-
-# # datafile = 'data/eng_ger_train.txt'
-# datafile = 'data/valdata.enhi.txt'
-# print('Data File:', datafile)
-# input_lang, output_lang, pairs = prepare_data(datafile, 'eng', 'hindi')
-# input_embd = input_lang.embeddings('data/eng.vec')
-# output_embd = output_lang.embeddings('data/hindi.vec')
-# print("Pretrained embedding loaded")
-# training_pairs = [tensorsFromPair(pairs[i]) for i in range(len(pairs))]
-# # training_pairs = training_pairs[0:1000]
+datafile = 'data/traindata.enhi.txt'
+print('Data File:', datafile)
+input_lang, output_lang, pairs = prepare_data(datafile, 'eng', 'hindi')
+input_embd = input_lang.embeddings('data/eng.vec')
+output_embd = output_lang.embeddings('data/hindi.vec')
+print("Pretrained embedding loaded")
+training_pairs = [tensorsFromPair(pairs[i]) for i in range(len(pairs))]
 
 print('Tranining Pairs:', len(training_pairs))
 
-val_data_file = 'data/eng_ger_valid.txt'
+val_data_file = 'data/valdata.enhi.txt'
 print('Validation File:', val_data_file)
 val_pairs = read_test_file(val_data_file)
 validation_pairs =[tensorsFromPair(val_pairs[i]) for i in range(len(val_pairs))]
-# validation_pairs = validation_pairs[0:1000]
 print('Validation Pairs:', len(validation_pairs))
 
 hidden_size = 256

@@ -127,27 +127,26 @@ def translate(input_tensor, model, max_length=MAX_LENGTH):
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
-# datafile = 'data/traindata.enhi.txt'
-#datafile = 'data/valdata.enhi.txt'
-#print('Data File:', datafile)
-#input_lang, output_lang, pairs = prepare_data(datafile, 'eng', 'hindi')
-#training_pairs = [tensorsFromPair(pairs[i]) for i in range(len(pairs))]
-#input_embd = input_lang.embeddings('data/eng.vec')
-#output_embd = output_lang.embeddings('data/hindi.vec')
-#print("Pretrained embedding loaded")
-# training_pairs = training_pairs[0:1000]
-#print('Tranining Pairs:', len(training_pairs))
-
-import pickle
-f = open('preprocess_en_hi.pickle', 'rb')
-data = pickle.load(f)
-f.close()
-input_lang =  data['in']
-output_lang = data['out']
-pairs = data['p']
-input_embd = data['in_e']
-output_embd = data['out_e']
-training_pairs = data['tp']
+datafile = 'data/traindata.enhi.txt'
+print('Data File:', datafile)
+input_lang, output_lang, pairs = prepare_data(datafile, 'eng', 'hindi')
+training_pairs = [tensorsFromPair(pairs[i]) for i in range(len(pairs))]
+input_embd = input_lang.embeddings('data/eng.vec')
+output_embd = output_lang.embeddings('data/hindi.vec')
+print("Pretrained embedding loaded")
+training_pairs = training_pairs[0:1000]
+print('Tranining Pairs:', len(training_pairs))
+#
+# import pickle
+# f = open('preprocess_en_hi.pickle', 'rb')
+# data = pickle.load(f)
+# f.close()
+# input_lang =  data['in']
+# output_lang = data['out']
+# pairs = data['p']
+# input_embd = data['in_e']
+# output_embd = data['out_e']
+# training_pairs = data['tp']
 
 val_data_file = 'data/valdata.enhi.txt'
 print('Validation File:', val_data_file)
@@ -209,7 +208,7 @@ for ep in range(epochs):
                 print("Epoch: {}, validation Loss: {} ".format(ep, vloss/len(validation_pairs)))
                 # calculate BLEU score
                 print('BLEU-1:', corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))
-                
+
     torch.save(model, 'model_eh_'+str(ep))
 
 # translate
