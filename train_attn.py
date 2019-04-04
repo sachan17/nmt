@@ -134,7 +134,6 @@ training_pairs = [tensorsFromPair(pairs[i]) for i in range(len(pairs))]
 input_embd = input_lang.embeddings('data/eng.vec')
 output_embd = output_lang.embeddings('data/hindi.vec')
 print("Pretrained embedding loaded")
-training_pairs = training_pairs[0:1000]
 print('Tranining Pairs:', len(training_pairs))
 #
 # import pickle

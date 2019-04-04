@@ -88,20 +88,11 @@ def validate(input_tensor, target_tensor, model, criterion, max_length=MAX_LENGT
 
 
     # use k-beam search
-    k=10
-    predictions = []
-
-    decoder_output, decoder_hidden, decoder_cell_state = model.decode(decoder_input, (decoder_hidden, decoder_cell_state))
-    loss += criterion(decoder_output, target_tensor[di])
-    topv, topi = decoder_output.data.topk(k)
-    decoder_input = topi.squeeze().detach()
 
     for di in range(target_length):
-        temp = []
-        for i in range(k):
         decoder_output, decoder_hidden, decoder_cell_state = model.decode(decoder_input, (decoder_hidden, decoder_cell_state))
         loss += criterion(decoder_output, target_tensor[di])
-        topv, topi = decoder_output.data.topk(k)
+        topv, topi = decoder_output.data.topk(1)
         decoder_input = topi.squeeze().detach()
 
     return loss.item() / target_length
@@ -136,6 +127,7 @@ def translate(input_tensor, model, max_length=MAX_LENGTH):
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
+
 datafile = 'data/traindata.enhi.txt'
 print('Data File:', datafile)
 input_lang, output_lang, pairs = prepare_data(datafile, 'eng', 'hindi')
@@ -143,6 +135,7 @@ input_embd = input_lang.embeddings('data/eng.vec')
 output_embd = output_lang.embeddings('data/hindi.vec')
 print("Pretrained embedding loaded")
 training_pairs = [tensorsFromPair(pairs[i]) for i in range(len(pairs))]
+# training_pairs = training_pairs[0:1000]
 
 print('Tranining Pairs:', len(training_pairs))
 
@@ -150,15 +143,16 @@ val_data_file = 'data/valdata.enhi.txt'
 print('Validation File:', val_data_file)
 val_pairs = read_test_file(val_data_file)
 validation_pairs =[tensorsFromPair(val_pairs[i]) for i in range(len(val_pairs))]
+# validation_pairs = validation_pairs[0:1000]
 print('Validation Pairs:', len(validation_pairs))
 
 hidden_size = 256
 
 model = Seq2Seq(input_lang.n_words, hidden_size, output_lang.n_words, input_embd, output_embd, device).to(device)
 
-epochs = 4
+epochs = 1
 
-learning_rate = 0.01
+learning_rate = 0.1
 optimizer = optim.SGD(model.parameters(), lr=learning_rate)
 # criterion = nn.NLLLoss()
 criterion = nn.CrossEntropyLoss()
@@ -204,7 +198,10 @@ for ep in range(epochs):
                         j += 1
                 print("Epoch: {}, validation Loss: {} ".format(ep, vloss/len(validation_pairs)))
                 # calculate BLEU score
-                print('BLEU-1:', corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))
+                #print('BLEU-1:', corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))
+                #print('BLEU-2:', corpus_bleu(actual, predicted, weights=(0.5, 0.5, 0, 0)))
+                #print('BLEU-3:', corpus_bleu(actual, predicted, weights=(0.3, 0.3, 0.3, 0)))
+                #print('BLEU-4:', corpus_bleu(actual, predicted, weights=(0.25, 0.25, 0.25, 0.25)))
 
     torch.save(model, 'model_eh_'+str(ep))
 
