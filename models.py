@@ -8,10 +8,10 @@ class Seq2Seq(nn.Module):
         super(Seq2Seq, self).__init__()
         self.device = device
         self.hidden_size = hidden_size
-        self.encoder_embedding = nn.Embedding.from_pretrained(input_embd, freeze=False)
+        self.encoder_embedding = nn.Embedding.from_pretrained(input_embd, freeze=True)
         self.encoder_lstm = nn.LSTM(300, hidden_size)#, bidirectional=True)
 
-        self.decoder_embedding = nn.Embedding.from_pretrained(output_embd, freeze=False)
+        self.decoder_embedding = nn.Embedding.from_pretrained(output_embd, freeze=True)
         self.decoder_lstm = nn.LSTM(300, hidden_size)#, bidirectional=True)
         self.time_dep = nn.Linear(hidden_size, output_size)
         self.softmax = nn.LogSoftmax(dim=1)
@@ -36,10 +36,10 @@ class Seq2Seq_attn(nn.Module):
         super(Seq2Seq_attn, self).__init__()
         self.device = device
         self.hidden_size = hidden_size
-        self.encoder_embedding = nn.Embedding.from_pretrained(input_embd, freeze=False)
+        self.encoder_embedding = nn.Embedding.from_pretrained(input_embd, freeze=True)
         self.encoder_lstm = nn.LSTM(300, hidden_size)
 
-        self.decoder_embedding = nn.Embedding.from_pretrained(output_embd, freeze=False)
+        self.decoder_embedding = nn.Embedding.from_pretrained(output_embd, freeze=True)
         self.decoder_lstm = nn.LSTM(300, hidden_size)
         self.time_dep = nn.Linear(hidden_size*2, output_size)
         self.softmax = nn.LogSoftmax(dim=1)
