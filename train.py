@@ -198,7 +198,7 @@ for ep in range(epochs):
                         j += 1
                 print("Epoch: {}, validation Loss: {} ".format(ep, vloss/len(validation_pairs)))
                 # calculate BLEU score
-                #print('BLEU-1:', corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))
+                print('BLEU-1:', corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))
                 #print('BLEU-2:', corpus_bleu(actual, predicted, weights=(0.5, 0.5, 0, 0)))
                 #print('BLEU-3:', corpus_bleu(actual, predicted, weights=(0.3, 0.3, 0.3, 0)))
                 #print('BLEU-4:', corpus_bleu(actual, predicted, weights=(0.25, 0.25, 0.25, 0.25)))
